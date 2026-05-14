@@ -1,47 +1,120 @@
-const express = require("express");
 const dotenv = require("dotenv");
+
+// LOAD .env FIRST
+dotenv.config();
+
+const express = require("express");
 const cors = require("cors");
 const dns = require("dns");
 
-//login and register
-const authRoutes = require("./routes/authroutes");
+const authRoutes=
+require("./routes/authroutes");
+
+const workspaceRoutes=
+require("./routes/workspaceRoutes");
+
+const connectDB=
+require("./config/db");
 
 
-// ===== DNS FIX FOR MONGODB SRV LOOKUP ISSUE =====
-dns.setDefaultResultOrder("ipv4first");
-dns.setServers(["8.8.8.8", "1.1.1.1"]);
-// =================================================
+// ===== DNS FIX =====
 
-const connectDB = require("./config/db");
+dns.setDefaultResultOrder(
+"ipv4first"
+);
 
-// Load environment variables
-dotenv.config();
+dns.setServers([
+"8.8.8.8",
+"1.1.1.1"
+]);
 
-console.log("🔍 MongoDB URI starts with:", process.env.MONGO_URI?.substring(0, 20));
 
-// Connect to Database
+// DEBUG
+
+console.log(
+"EMAIL:",
+process.env.EMAIL
+);
+
+console.log(
+"PASSWORD:",
+process.env.EMAIL_PASSWORD
+);
+
+
+// CONNECT DATABASE
+
 connectDB();
 
-const app = express();
+const app=
+express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
 
-// Routes
-app.use("/api/users", require("./routes/userRoutes"));
+// MIDDLEWARE
 
-//login and register
-app.use("/api/auth", authRoutes);
+app.use(
+cors()
+);
 
-// Test Route
-app.get("/", (req, res) => {
-  res.json({ message: "API Running Successfully!" });
+app.use(
+express.json()
+);
+
+
+// ROUTES
+
+app.use(
+"/api/users",
+require("./routes/userRoutes")
+);
+
+app.use(
+"/api/auth",
+authRoutes
+);
+
+app.use(
+"/api/workspace",
+workspaceRoutes
+);
+app.use(
+"/api/notifications",
+require(
+"./routes/notificationRoutes"
+)
+);
+
+// TEST ROUTE
+
+app.get(
+"/",
+(req,res)=>{
+
+res.json({
+
+message:
+"API Running Successfully!"
+
 });
 
-const PORT = process.env.PORT || 5000;
+}
+);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server Running on Port ${PORT}`);
-  console.log(`📡 API URL: http://localhost:${PORT}`);
-});
+
+const PORT=
+process.env.PORT || 5000;
+
+
+app.listen(
+
+PORT,
+
+()=>{
+
+console.log(
+`🚀 Server Running on Port ${PORT}`
+);
+
+}
+
+);

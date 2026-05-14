@@ -3,9 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { toast } from "react-toastify";
 
+import {
+  SignInButton,
+  useUser
+} from "@clerk/clerk-react";
+
 function Register() {
 
   const navigate = useNavigate();
+
+  const { isSignedIn } = useUser();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -13,357 +20,345 @@ function Register() {
     password: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+  useState(false);
+
+
+  useState(() => {
+
+    if(isSignedIn){
+
+      toast.success(
+        "Login Successful 🎉"
+      );
+
+      navigate("/");
+
+    }
+
+  },[isSignedIn]);
+
 
   const handleChange = (e) => {
+
     setFormData({
+
       ...formData,
-      [e.target.name]: e.target.value,
+
+      [e.target.name]:
+      e.target.value
+
     });
+
   };
 
-  const handleSubmit = async (e) => {
+
+  const handleSubmit =
+  async (e) => {
+
     e.preventDefault();
 
     try {
 
       setLoading(true);
 
+      const res =
       await API.post(
         "/auth/register",
         formData
       );
 
-     toast.success("Registration Successful");
+      toast.success(
+        "Registration Successful 🎉"
+      );
 
       navigate("/login");
 
-    } catch (error) {
+    }
 
-      console.log(error.response?.data);
+    catch(error){
 
       toast.error(
-  error.response?.data?.message ||
-  "Registration Failed"
-);
 
-    } finally {
+      error.response?.data
+      ?.message ||
+
+      "Registration Failed"
+
+      );
+
+    }
+
+    finally{
 
       setLoading(false);
+
     }
+
   };
 
-  return (
-    <div className="min-h-screen bg-[#050816] text-white overflow-hidden">
 
-      <div className="grid lg:grid-cols-[45%_55%] min-h-screen">
+return (
 
-        {/* LEFT SIDE */}
-        <div className="relative border-r border-[#182033] flex justify-start">
+<div className="min-h-screen bg-[#050816] text-white overflow-hidden">
 
-          <div className="w-full max-w-[560px] pl-10 lg:pl-16 pt-10 pb-10">
+<div className="grid lg:grid-cols-[45%_55%] min-h-screen">
 
-            {/* LOGO */}
-            <div className="flex items-center gap-4 mb-16">
 
-              <div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center text-2xl">
-                🚀
-              </div>
+{/* LEFT */}
 
-              <h1 className="text-4xl font-bold tracking-tight">
-                CollabApp
-              </h1>
+<div className="relative border-r border-[#182033] flex justify-start">
 
-            </div>
+<div className="w-full max-w-[560px] pl-10 lg:pl-16 pt-10 pb-10">
 
-            {/* BADGE */}
-            <div className="inline-flex items-center px-5 py-2 rounded-full bg-purple-900/30 border border-purple-500/20 text-purple-300 mb-10 text-lg">
-              ✨ Join The Future of Collaboration
-            </div>
+<div className="flex items-center gap-4 mb-16">
 
-            {/* HEADING */}
-            <h1 className="text-[64px] leading-[72px] font-bold tracking-tight mb-8">
+<div className="w-12 h-12 rounded-xl bg-purple-600 flex items-center justify-center text-2xl">
 
-              Create Your
-              <br />
+🚀
 
-              Workspace &
-              <br />
+</div>
 
-              <span className="text-purple-500">
-                Start Growing.
-              </span>
+<h1 className="text-4xl font-bold">
 
-            </h1>
+CollabApp
 
-            {/* DESCRIPTION */}
-            <p className="text-gray-400 text-[24px] leading-[38px] mb-12 max-w-[500px]">
-              Build projects, manage teams,
-              and collaborate smarter using AI-powered tools.
-            </p>
+</h1>
 
-            {/* PREVIEW CARD */}
-            <div className="w-[470px] bg-[#0E1628] border border-[#1B2435] rounded-[28px] p-5 shadow-2xl mb-14">
+</div>
 
-              <div className="flex justify-between items-center mb-5">
 
-                <div>
+<div className="inline-flex items-center px-5 py-2 rounded-full bg-purple-900/30 text-purple-300 mb-10">
 
-                  <h3 className="font-semibold text-lg">
-                    Productivity Insights
-                  </h3>
+✨ Join The Future of Collaboration
 
-                  <p className="text-gray-500 text-sm">
-                    Team Performance
-                  </p>
+</div>
 
-                </div>
 
-                <div className="bg-green-500 px-4 py-1 rounded-lg text-sm">
-                  Online
-                </div>
+<h1 className="text-[64px] leading-[72px] font-bold">
 
-              </div>
+Create Your
+<br/>
 
-              <div className="space-y-5">
+Workspace &
+<br/>
 
-                <div className="bg-[#131D31] rounded-xl p-4">
+<span className="text-purple-500">
 
-                  <div className="flex justify-between mb-2 text-sm">
-                    <span>Projects Completed</span>
-                    <span className="text-green-400">
-                      92%
-                    </span>
-                  </div>
+Start Growing.
 
-                  <div className="w-full h-2 bg-gray-700 rounded-full">
+</span>
 
-                    <div className="w-[92%] h-2 bg-green-500 rounded-full"></div>
+</h1>
 
-                  </div>
-                </div>
 
-                <div className="bg-[#131D31] rounded-xl p-4">
+<p className="text-gray-400 text-xl mt-8">
 
-                  <div className="flex justify-between mb-2 text-sm">
-                    <span>AI Productivity Boost</span>
-                    <span className="text-purple-400">
-                      78%
-                    </span>
-                  </div>
+Build projects, manage teams,
+and collaborate smarter
+using AI tools.
 
-                  <div className="w-full h-2 bg-gray-700 rounded-full">
+</p>
 
-                    <div className="w-[78%] h-2 bg-purple-500 rounded-full"></div>
+</div>
 
-                  </div>
-                </div>
+</div>
 
-              </div>
-            </div>
 
-            {/* FEATURES */}
-            <div className="space-y-8">
+{/* RIGHT */}
 
-              <div className="flex gap-5 items-start">
+<div className="flex items-center justify-center px-8 lg:px-16">
 
-                <div className="w-14 h-14 rounded-2xl bg-purple-600/20 flex items-center justify-center text-2xl">
-                  ⚡
-                </div>
+<div className="w-full max-w-[760px] bg-[#0F172A]/80 border border-[#1E293B] rounded-[36px] p-10">
 
-                <div>
+<h2 className="text-6xl font-bold mb-4">
 
-                  <h3 className="text-2xl font-semibold mb-1">
-                    Faster Workflow
-                  </h3>
+Register
 
-                  <p className="text-gray-400 text-lg leading-relaxed">
-                    Manage projects with lightning speed.
-                  </p>
+</h2>
 
-                </div>
-              </div>
+<p className="text-gray-400 text-xl mb-10">
 
-              <div className="flex gap-5 items-start">
+Create your account
 
-                <div className="w-14 h-14 rounded-2xl bg-purple-600/20 flex items-center justify-center text-2xl">
-                  🤝
-                </div>
+</p>
 
-                <div>
 
-                  <h3 className="text-2xl font-semibold mb-1">
-                    Team Collaboration
-                  </h3>
 
-                  <p className="text-gray-400 text-lg leading-relaxed">
-                    Work together in real-time from anywhere.
-                  </p>
+<form
+onSubmit={handleSubmit}
+className="space-y-8"
+>
 
-                </div>
-              </div>
+<div>
 
-              <div className="flex gap-5 items-start">
+<label className="block mb-3">
 
-                <div className="w-14 h-14 rounded-2xl bg-purple-600/20 flex items-center justify-center text-2xl">
-                  🔒
-                </div>
+Full Name
 
-                <div>
+</label>
 
-                  <h3 className="text-2xl font-semibold mb-1">
-                    Secure Platform
-                  </h3>
+<input
+type="text"
+name="name"
+value={formData.name}
+onChange={handleChange}
+placeholder="Enter full name"
+className="w-full bg-[#111827] border border-gray-700 px-6 py-5 rounded-2xl"
+required
+/>
 
-                  <p className="text-gray-400 text-lg leading-relaxed">
-                    Enterprise-grade security for your data.
-                  </p>
+</div>
 
-                </div>
-              </div>
 
-            </div>
-          </div>
-        </div>
 
-        {/* RIGHT SIDE */}
-        <div className="flex items-center justify-center px-8 lg:px-16">
+<div>
 
-          <div className="w-full max-w-[760px] bg-[#0F172A]/80 border border-[#1E293B] backdrop-blur-2xl rounded-[36px] p-10 lg:p-14 shadow-2xl">
+<label className="block mb-3">
 
-            {/* HEADER */}
-            <div className="mb-12">
+Email Address
 
-              <h2 className="text-6xl font-bold mb-4">
-                Register
-              </h2>
+</label>
 
-              <p className="text-gray-400 text-xl">
-                Create your account and start collaborating
-              </p>
+<input
+type="email"
+name="email"
+value={formData.email}
+onChange={handleChange}
+placeholder="Enter email"
+className="w-full bg-[#111827] border border-gray-700 px-6 py-5 rounded-2xl"
+required
+/>
 
-            </div>
+</div>
 
-            {/* FORM */}
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-8"
-            >
 
-              {/* NAME */}
-              <div>
 
-                <label className="block mb-3 text-xl font-medium">
-                  Full Name
-                </label>
+<div>
 
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full bg-[#111827] border border-gray-700 focus:border-purple-500 outline-none px-6 py-5 rounded-2xl text-xl"
-                  required
-                />
-              </div>
+<label className="block mb-3">
 
-              {/* EMAIL */}
-              <div>
+Password
 
-                <label className="block mb-3 text-xl font-medium">
-                  Email Address
-                </label>
+</label>
 
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full bg-[#111827] border border-gray-700 focus:border-purple-500 outline-none px-6 py-5 rounded-2xl text-xl"
-                  required
-                />
-              </div>
+<input
+type="password"
+name="password"
+value={formData.password}
+onChange={handleChange}
+placeholder="Create password"
+className="w-full bg-[#111827] border border-gray-700 px-6 py-5 rounded-2xl"
+required
+/>
 
-              {/* PASSWORD */}
-              <div>
+</div>
 
-                <label className="block mb-3 text-xl font-medium">
-                  Password
-                </label>
 
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full bg-[#111827] border border-gray-700 focus:border-purple-500 outline-none px-6 py-5 rounded-2xl text-xl"
-                  required
-                />
-              </div>
+<button
+type="submit"
+disabled={loading}
+className="w-full bg-gradient-to-r from-purple-500 to-purple-700 py-5 rounded-2xl text-xl font-semibold"
+>
 
-              {/* BUTTON */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-500 to-purple-700 py-5 rounded-2xl text-2xl font-semibold"
-              >
-                {loading ? "Creating Account..." : "Create Account"}
-              </button>
+{
+loading
+?
 
-            </form>
+"Creating..."
 
-            {/* DIVIDER */}
-            <div className="flex items-center gap-4 my-10">
+:
 
-              <div className="flex-1 h-px bg-gray-700"></div>
+"Create Account"
+}
 
-              <span className="text-gray-500 text-lg">
-                Or continue with
-              </span>
+</button>
 
-              <div className="flex-1 h-px bg-gray-700"></div>
+</form>
 
-            </div>
 
-            {/* SOCIAL */}
-            <div className="grid grid-cols-3 gap-5">
+<div className="flex items-center gap-4 my-10">
 
-              <button className="border border-gray-700 hover:bg-[#1B2435] transition py-4 rounded-2xl text-lg">
-                Google
-              </button>
+<div className="flex-1 h-px bg-gray-700"></div>
 
-              <button className="border border-gray-700 hover:bg-[#1B2435] transition py-4 rounded-2xl text-lg">
-                GitHub
-              </button>
+<span className="text-gray-500">
 
-              <button className="border border-gray-700 hover:bg-[#1B2435] transition py-4 rounded-2xl text-lg">
-                Microsoft
-              </button>
+Or continue with
 
-            </div>
+</span>
 
-            {/* FOOTER */}
-            <p className="text-center text-gray-400 mt-10 text-xl">
+<div className="flex-1 h-px bg-gray-700"></div>
 
-              Already have an account?{" "}
+</div>
 
-              <Link
-                to="/login"
-                className="text-purple-400"
-              >
-                Login
-              </Link>
 
-            </p>
 
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+<div className="grid grid-cols-3 gap-5">
+
+
+<SignInButton mode="modal">
+
+<button className="border border-gray-700 py-4 rounded-2xl">
+
+Google
+
+</button>
+
+</SignInButton>
+
+
+
+<SignInButton mode="modal">
+
+<button className="border border-gray-700 py-4 rounded-2xl">
+
+GitHub
+
+</button>
+
+</SignInButton>
+
+
+
+<SignInButton mode="modal">
+
+<button className="border border-gray-700 py-4 rounded-2xl">
+
+Microsoft
+
+</button>
+
+</SignInButton>
+
+
+</div>
+
+
+<p className="text-center text-gray-400 mt-10">
+
+Already have an account?{" "}
+
+<Link
+to="/login"
+className="text-purple-400"
+>
+
+Login
+
+</Link>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default Register;
